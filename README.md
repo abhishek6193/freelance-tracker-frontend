@@ -1,1 +1,0 @@
-# freelance-tracker-frontend
