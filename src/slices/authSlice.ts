@@ -7,6 +7,7 @@ interface AuthState {
   expiresAt?: number | null;
   loading: boolean;
   error: string | null;
+  rehydrating?: boolean; // <-- added
 }
 
 const initialState: AuthState = {
@@ -16,6 +17,7 @@ const initialState: AuthState = {
   expiresAt: null,
   loading: false,
   error: null,
+  rehydrating: true, // <-- added
 };
 
 // Save auth state to localStorage on login/signup/logout
@@ -50,6 +52,9 @@ const authSlice = createSlice({
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
+    setRehydrating(state, action: PayloadAction<boolean>) {
+      state.rehydrating = action.payload;
+    },
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
     },
@@ -64,5 +69,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuth, setLoading, setError, logout } = authSlice.actions;
+export const { setAuth, setLoading, setError, logout, setRehydrating } = authSlice.actions;
 export default authSlice.reducer;

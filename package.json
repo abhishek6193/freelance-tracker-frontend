@@ -14,6 +14,7 @@
     "@types/react-dom": "^19.1.5",
     "axios": "^1.9.0",
     "cra-template-pwa": "2.0.0",
+    "express-async-handler": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.2.0",

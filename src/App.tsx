@@ -8,13 +8,19 @@ import LoginPage from './pages/Login';
 import SignupPage from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
 import { RootState } from './store';
-import { setAuth, logout } from './slices/authSlice';
+import { setAuth, logout, setRehydrating } from './slices/authSlice';
 import SessionTimeoutModal from './components/SessionTimeoutModal';
 import { API_BASE_URL } from './services/apiBase';
+import DashboardPage from './pages/Dashboard';
+import ClientsPage from './pages/Clients';
+import SidebarNav from './components/SidebarNav';
+import { AppManager } from './components/manager';
 
 const AuthRedirect: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const rehydrating = useSelector((state: RootState) => state.auth.rehydrating);
   const location = useLocation();
+  if (rehydrating) return null; // Don't redirect while rehydrating
   if (user) {
     // If user is authenticated, redirect from /login or /signup to /dashboard
     if (location.pathname === '/login' || location.pathname === '/signup') {
@@ -34,8 +40,17 @@ const App: React.FC = () => {
   const auth = useSelector((state: RootState) => state.auth);
   const [sessionTimeout, setSessionTimeout] = React.useState(false);
 
+  // Redirect to /login if not authenticated and not already on /login or /signup
+  useEffect(() => {
+    if (auth.rehydrating) return; // Don't redirect while rehydrating
+    if (!auth.user && !['/login', '/signup'].includes(window.location.pathname)) {
+      window.location.replace('/login');
+    }
+  }, [auth.user, auth.rehydrating]);
+
   useEffect(() => {
     // Rehydrate auth state from localStorage on app load
+    dispatch(setRehydrating(true));
     const authData = localStorage.getItem('auth');
     if (authData) {
       try {
@@ -47,6 +62,7 @@ const App: React.FC = () => {
         // Could not parse auth data, ignore and start with empty state
       }
     }
+    dispatch(setRehydrating(false));
   }, [dispatch]);
 
   // Token refresh logic
@@ -97,14 +113,30 @@ const App: React.FC = () => {
       <Router>
         <TopBar />
         <AuthRedirect>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<div>Dashboard (TODO)</div>} />
-            </Route>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-          </Routes>
+          <AppManager>
+            {auth.user ? (
+              <div className="flex min-h-screen">
+                <SidebarNav />
+                <div className="flex-1">
+                  <Routes>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/signup" element={<SignupPage />} />
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/dashboard" element={<DashboardPage />} />
+                      <Route path="/clients" element={<ClientsPage />} />
+                    </Route>
+                    <Route path="/" element={<Navigate to="/login" replace />} />
+                  </Routes>
+                </div>
+              </div>
+            ) : (
+              <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/" element={<Navigate to="/login" replace />} />
+              </Routes>
+            )}
+          </AppManager>
         </AuthRedirect>
       </Router>
     </>
