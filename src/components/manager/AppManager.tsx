@@ -28,7 +28,10 @@ const AppManager: React.FC<AppManagerProps> = ({ children }) => {
 
   React.useEffect(() => {
     async function fetchClientsOnAppLoad() {
-      if (!auth.token) return;
+      if (!auth.token) {
+        setClientsLoading(false);
+        return;
+      }
       setClientsLoading(true);
       const sortOption = getSortFromStorage();
       try {
