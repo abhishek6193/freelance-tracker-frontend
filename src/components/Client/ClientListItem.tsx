@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
 import { request } from '../../services/request';
 import { updateClient } from '../../slices/clientsSlice';
-import ClientActionsMenu from './ClientActionsMenu';
+import Avatar from '../common/Avatar';
+import Button from '../common/Button';
+import ActionMenu from '../common/ActionMenu';
 import ClientViewModal from './ClientViewModal';
 import ClientEditModal from './ClientEditModal';
 import ClientDeleteConfirmModal from './ClientDeleteConfirmModal';
@@ -93,14 +95,17 @@ const ClientListItem: React.FC<ClientListItemProps> = ({
     <>
       <tr>
         <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-          <button
-            className="hover:underline text-indigo-600 hover:text-indigo-800 transition-colors duration-150 focus:outline-none"
-            style={{ cursor: 'pointer' }}
-            onClick={handleView}
-            aria-label={`View details for ${client.name}`}
-          >
-            {client.name}
-          </button>
+          <div className="flex items-center gap-3">
+            <Avatar name={client.name} size={32} />
+            <button
+              style={{ cursor: 'pointer' }}
+              onClick={handleView}
+              aria-label={`View details for ${client.name}`}
+              className="hover:underline text-indigo-600 hover:text-indigo-800 transition-colors duration-150 focus:outline-none"
+            >
+              {client.name}
+            </button>
+          </div>
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-gray-700">{client.contactEmail || '-'}</td>
         <td className="px-6 py-4 whitespace-nowrap text-gray-700">{client.contactPhone || '-'}</td>
@@ -108,11 +113,14 @@ const ClientListItem: React.FC<ClientListItemProps> = ({
           className="px-6 py-4 whitespace-nowrap text-right align-top relative"
           style={{ zIndex: openMenuId === client._id ? 50 : 1 }}
         >
-          <button
+          <Button
             ref={buttonRef}
-            className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-0"
+            className="p-2 rounded-full"
             style={{ outline: 'none', boxShadow: 'none' }}
-            onClick={() => setOpenMenuId(openMenuId === client._id ? null : client._id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenMenuId(openMenuId === client._id ? null : client._id);
+            }}
             aria-label="Open actions menu"
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,39 +128,74 @@ const ClientListItem: React.FC<ClientListItemProps> = ({
               <circle cx="12" cy="12" r="1.5" />
               <circle cx="12" cy="19" r="1.5" />
             </svg>
-          </button>
-          <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-40">
-            <div
-              style={(() => {
-                if (!buttonRef.current) return {};
-                const rect = buttonRef.current.getBoundingClientRect();
-                const menuWidth = 144; // 9rem in px
-                const padding = 8; // px from edge
-                let left = rect.left;
-                if (left + menuWidth + padding > window.innerWidth) {
-                  left = window.innerWidth - menuWidth - padding;
-                }
-                left = Math.max(left, padding);
-                return {
-                  position: 'absolute',
-                  left,
-                  top: rect.bottom + window.scrollY,
-                  minWidth: menuWidth,
-                  zIndex: 50,
-                  pointerEvents: openMenuId === client._id ? 'auto' : 'none',
-                };
-              })()}
-            >
-              <ClientActionsMenu
-                open={openMenuId === client._id}
-                onClose={() => setOpenMenuId(null)}
-                onView={handleView}
-                onEdit={() => handleEdit()}
-                onDelete={handleDelete}
-                anchorRef={buttonRef}
-              />
-            </div>
-          </div>
+          </Button>
+          <ActionMenu
+            open={openMenuId === client._id}
+            anchorRef={buttonRef}
+            onClose={() => setOpenMenuId(null)}
+            items={[
+              {
+                label: 'View',
+                icon: (
+                  <svg
+                    className="w-5 h-5 text-gray-500"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.25 12C3.5 7.5 7.5 4.5 12 4.5s8.5 3 9.75 7.5c-1.25 4.5-5.25 7.5-9.75 7.5s-8.5-3-9.75-7.5z"
+                    />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                ),
+                onClick: handleView,
+              },
+              {
+                label: 'Edit',
+                icon: (
+                  <svg
+                    className="w-5 h-5 text-gray-500"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 3.487a2.25 2.25 0 113.182 3.182L7.5 19.213l-4 1 1-4 12.362-12.726z"
+                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 6l3 3" />
+                  </svg>
+                ),
+                onClick: () => handleEdit(),
+              },
+              {
+                label: 'Delete',
+                icon: (
+                  <svg
+                    className="w-5 h-5 text-red-500"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"
+                    />
+                  </svg>
+                ),
+                onClick: handleDelete,
+                danger: true,
+              },
+            ]}
+          />
         </td>
       </tr>
       {showViewModal && (

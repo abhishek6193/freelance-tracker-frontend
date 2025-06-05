@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './common/Button';
 
 interface SessionTimeoutModalProps {
   open: boolean;
@@ -14,12 +15,13 @@ const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({ open, onLogin
         <p className="mb-6 text-center text-gray-700">
           Your session has expired. Please log in again to continue.
         </p>
-        <button
+        <Button
           className="px-6 py-2 bg-primary text-white rounded hover:bg-primary-dark transition"
+          color="primary"
           onClick={onLogin}
         >
           Log In
-        </button>
+        </Button>
       </div>
     </div>
   );

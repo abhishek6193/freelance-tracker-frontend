@@ -4,6 +4,7 @@ import { RootState } from '../store';
 import { logout as logoutAction } from '../slices/authSlice';
 import { AUTH_API } from '../services/apiRoutes';
 import { request } from '../services/request';
+import Button from './common/Button';
 
 const TopBar: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -35,12 +36,13 @@ const TopBar: React.FC = () => {
       </div>
       {user ? (
         <>
-          <button
+          <Button
             onClick={handleLogout}
             className="bg-primary text-white px-4 py-1 rounded hover:bg-primary-dark transition text-sm font-medium"
+            color="primary"
           >
             Logout
-          </button>
+          </Button>
           {error && (
             <div className="ml-4 text-error text-sm bg-rose-50 border border-rose-200 rounded px-3 py-1">
               {error}

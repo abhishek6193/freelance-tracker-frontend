@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import Button from '../../components/common/Button';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -29,12 +30,13 @@ const Dashboard: React.FC = () => {
           <div className="text-4xl mb-4">🎉</div>
           <h2 className="text-2xl font-bold mb-2 text-primary">Welcome to Freelance Tracker!</h2>
           <p className="mb-6 text-gray-700 text-center">You have no clients or tasks yet.</p>
-          <button
+          <Button
             className="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition w-full"
+            color="primary"
             onClick={() => navigate('/clients')}
           >
             Add Your First Client
-          </button>
+          </Button>
         </div>
       </main>
     );
@@ -62,12 +64,13 @@ const Dashboard: React.FC = () => {
               </li>
             ))}
         </ul>
-        <button
+        <Button
           className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition w-full"
+          color="primary"
           onClick={() => navigate('/clients')}
         >
           View All Clients
-        </button>
+        </Button>
       </div>
     </main>
   );

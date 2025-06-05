@@ -13,6 +13,7 @@ import SessionTimeoutModal from './components/SessionTimeoutModal';
 import { API_BASE_URL } from './services/apiBase';
 import DashboardPage from './pages/Dashboard';
 import ClientsPage from './pages/Clients';
+import ClientDetailsPage from './pages/ClientDetails';
 import SidebarNav from './components/SidebarNav';
 import { AppManager } from './components/manager';
 
@@ -124,6 +125,7 @@ const App: React.FC = () => {
                     <Route element={<ProtectedRoute />}>
                       <Route path="/dashboard" element={<DashboardPage />} />
                       <Route path="/clients" element={<ClientsPage />} />
+                      <Route path="/clients/:id" element={<ClientDetailsPage />} />
                     </Route>
                     <Route path="/" element={<Navigate to="/login" replace />} />
                   </Routes>

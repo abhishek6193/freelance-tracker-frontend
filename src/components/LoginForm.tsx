@@ -6,6 +6,7 @@ import AuthCard from './AuthCard';
 import { request } from '../services/request';
 import { AUTH_API } from '../services/apiRoutes';
 import { GoogleLogin } from '@react-oauth/google';
+import Button from './common/Button';
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -90,13 +91,14 @@ const LoginForm: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button
+        <Button
           type="submit"
           className="w-full py-2 bg-primary text-white font-semibold rounded hover:bg-primary-dark transition"
+          color="primary"
           disabled={loading}
         >
           {loading ? 'Logging in...' : 'Login'}
-        </button>
+        </Button>
         <div className="w-full flex flex-col gap-2">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
@@ -108,14 +110,15 @@ const LoginForm: React.FC = () => {
         {error && <div className="text-error text-sm text-center mt-2">{error}</div>}
         <div className="text-center text-sm mt-2">
           Don't have an account?{' '}
-          <button
+          <Button
             type="button"
             className="text-primary underline hover:text-primary-dark"
+            color="secondary"
             onClick={() => navigate('/signup')}
             disabled={loading}
           >
             Sign up
-          </button>
+          </Button>
         </div>
       </form>
     </AuthCard>
