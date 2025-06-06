@@ -47,8 +47,8 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
     if (open && anchorRef.current) {
       const rect = anchorRef.current.getBoundingClientRect();
       setPosition({
-        top: rect.bottom + window.scrollY + 4,
-        left: rect.right + window.scrollX - 200,
+        top: rect.bottom + 4,
+        left: rect.left,
       });
     }
   }, [open, anchorRef]);
@@ -58,7 +58,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
   const menu = (
     <div
       ref={menuRef}
-      className={`absolute w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 animate-fade-in ${className}`}
+      className={`fixed w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-[9999] animate-fade-in ${className}`}
       style={{ top: position.top, left: position.left }}
     >
       {items.map((item, idx) => (

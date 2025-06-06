@@ -4,7 +4,7 @@ import Button from './Button';
 export interface EntityModalField {
   name: string;
   label: string;
-  type: 'text' | 'email' | 'number' | 'textarea' | 'select';
+  type: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'date';
   options?: { label: string; value: string }[];
   required?: boolean;
 }
@@ -83,6 +83,14 @@ function EntityModal<T extends Record<string, any>>({
                     </option>
                   ))}
                 </select>
+              ) : field.type === 'date' ? (
+                <input
+                  className="w-full border rounded px-2 py-1"
+                  type="date"
+                  value={form[field.name] || ''}
+                  onChange={(e) => handleChange(field.name, e.target.value)}
+                  required={field.required}
+                />
               ) : (
                 <input
                   className="w-full border rounded px-2 py-1"

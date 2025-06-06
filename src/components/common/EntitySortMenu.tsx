@@ -12,9 +12,18 @@ interface EntitySortMenuProps {
   value: string;
   onChange: (value: string) => void;
   label: string;
+  className?: string;
+  showLabel?: boolean;
 }
 
-const EntitySortMenu: React.FC<EntitySortMenuProps> = ({ options, value, onChange, label }) => {
+const EntitySortMenu: React.FC<EntitySortMenuProps> = ({
+  options,
+  value,
+  onChange,
+  label,
+  className,
+  showLabel = true,
+}) => {
   const [open, setOpen] = React.useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const selected = options.find((opt) => opt.value === value);
@@ -23,7 +32,10 @@ const EntitySortMenu: React.FC<EntitySortMenuProps> = ({ options, value, onChang
     <div className="relative">
       <Button
         ref={buttonRef}
-        className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium border border-gray-200 flex items-center gap-1"
+        className={
+          (className ? className + ' ' : '') +
+          'px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium border border-gray-200 flex items-center gap-1'
+        }
         color="secondary"
         onClick={(e) => {
           e.stopPropagation();
@@ -33,7 +45,15 @@ const EntitySortMenu: React.FC<EntitySortMenuProps> = ({ options, value, onChang
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <span>Sort: {selected ? selected.label : label}</span>
+        <span className="truncate block">
+          {showLabel ? (
+            <>Sort: {selected ? selected.label : label}</>
+          ) : selected ? (
+            selected.label
+          ) : (
+            label
+          )}
+        </span>
         <svg
           className="w-4 h-4 ml-1"
           fill="none"
